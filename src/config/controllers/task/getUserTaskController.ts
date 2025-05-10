@@ -10,7 +10,13 @@ export async function getUserTasksController(
     const user = req.user;
 
     const parseUrl = url.parse(req.url || "", true);
-    const { page = "1", limit = "5", completed } = parseUrl.query;
+    const {
+      page = "1",
+      limit = "5",
+      completed,
+      sortBy = "createdAt",
+      order = "desc",
+    } = parseUrl.query;
 
     const pageNumber = parseInt(page as string, 10);
     const limitNumber = parseInt(limit as string, 10);
@@ -21,7 +27,12 @@ export async function getUserTasksController(
       query.completed = completed === "true";
     }
 
-    const tasks = await Task.find(query).skip(skip).limit(limitNumber);
+    const sortOrder = order === "asc" ? 1 : -1;
+
+    const tasks = await Task.find(query)
+      .sort({ [sortBy as string]: sortOrder })
+      .skip(skip)
+      .limit(limitNumber);
 
     res.writeHead(200, { "content-type": "application/json" });
     res.end(JSON.stringify({ tasks }));
