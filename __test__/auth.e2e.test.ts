@@ -27,7 +27,7 @@ describe("Auth API (E2E)", () => {
       .post("/login")
       .send({ username: "test", password: "password2424" });
     expect(res.status).toBe(200);
-    expect(res.body.token).toBeDeFined();
+    expect(res.body.token).toBeDefined();
   });
   it("GET /private -> 401 sin token", async () => {
     const res = await request(server).get("/private");

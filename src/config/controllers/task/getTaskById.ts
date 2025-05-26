@@ -8,6 +8,7 @@ export async function getTaskByIdController(
 ) {
   try {
     const taskId = req.url?.split("/")[3];
+
     if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
       res.writeHead(400, { "content-type": "application/json" });
       return res.end(JSON.stringify({ message: "ID invalido" }));
@@ -24,8 +25,14 @@ export async function getTaskByIdController(
       );
     }
 
+    const taskObj = task.toObject();
+    const taskWihthFileUrl = {
+      ...taskObj,
+      fileUrl: task.file ? `tasks/${task._id}/file` : null,
+    };
+
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ task }));
+    res.end(JSON.stringify({ task: taskWihthFileUrl }));
   } catch (err) {
     console.log("Error al obtener tarea por ID: ", err);
 

@@ -1,7 +1,8 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { Task } from "../../../models/Task";
-import { getIdFromUrl } from "../../../utils/getIdFromUrl";
 import mongoose from "mongoose";
+import fs from "fs";
+import path from "path";
 
 export async function deleteTaskController(
   req: IncomingMessage,
@@ -17,16 +18,25 @@ export async function deleteTaskController(
   //@ts-ignore
   const user = req.user;
   try {
-    const task = await Task.findOneAndDelete({ id: taskId, owner: user._id });
+    const task = await Task.findOneAndDelete({ _id: taskId, owner: user._id });
     if (!task) {
       res.writeHead(404, { "content-type": "application/json" });
       return res.end(
         JSON.stringify({ message: "Tarea no encontrada o no autorizada" })
       );
     }
+    //eliminar archivo existente
+    if (task.file) {
+      const filePath = path.join(__dirname, "../../../../uploads", task.file);
+      try {
+        fs.unlinkSync(filePath);
+      } catch (err) {
+        console.log(`Error al eliminar archivo: ${err}`);
+      }
+    }
 
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ message: "Trea elimina correctamente", task }));
+    res.end(JSON.stringify({ message: "Tarea eliminada correctamente", task }));
   } catch (err) {
     console.log("Error al eliminar tarea: ", err);
 

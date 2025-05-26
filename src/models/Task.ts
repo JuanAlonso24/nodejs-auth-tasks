@@ -4,6 +4,7 @@ export interface ITask extends Document {
   description?: string;
   completed: boolean;
   owner: mongoose.Types.ObjectId;
+  file?: string;
 }
 
 const taskSchema = new Schema<ITask>(
@@ -16,6 +17,7 @@ const taskSchema = new Schema<ITask>(
       ref: "User",
       required: true,
     },
+    file: { type: String },
   },
   { timestamps: true }
 );

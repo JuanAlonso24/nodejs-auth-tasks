@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { Task } from "../../../models/Task";
 import { StringDecoder } from "string_decoder";
 import mongoose from "mongoose";
+import { validateTaskUpdate } from "../../../routes/validations/task.schema";
 
 export async function updateTaskController(
   req: IncomingMessage,
@@ -23,28 +24,38 @@ export async function updateTaskController(
     body += decoder.end();
 
     try {
-      const updates = JSON.parse(body);
+      const parsed = JSON.parse(body);
+
+      // Validar datos
+      const validation = validateTaskUpdate(parsed);
+
+      if (!validation.success) {
+        res.writeHead(400, { "content-type": "application/json" });
+        return res.end(
+          JSON.stringify({
+            message: "Datos invalidos",
+            errors: validation.error.errors,
+          })
+        );
+      }
+      const updates = validation.data;
+
       //@ts-ignore
       const user = req.user;
 
-      const task = await Task.findOneAndUpdate(
-        { _id: taskId, owner: user._id },
-        updates,
-        { new: true }
-      );
+      const task = await Task.findOne({ _id: taskId, owner: user._id });
 
       if (!task) {
         res.writeHead(404, { "content-type": "application/json" });
-        return res.end(
-          JSON.stringify({ message: "Tarea no encontrada o no autorizada" })
-        );
+        return res.end(JSON.stringify({ message: "Tarea no encontrada" }));
       }
+
+      Object.assign(task, updates);
+      await task.save();
 
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ message: "Tarea actualizada", task }));
     } catch (err) {
-      console.log("Error al actualizar tarea: ", err);
-
       res.writeHead(500, { "content-type": "application/json" });
       res.end(JSON.stringify({ message: "Error al actualizar la tarea" }));
     }

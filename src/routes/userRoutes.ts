@@ -51,7 +51,7 @@ export async function userRouters(req: IncomingMessage, res: ServerResponse) {
   }
 
   // RUTA PRIVADA
-  if (req.method === "GET" && req.url === "/profile") {
+  if (req.method === "GET" && req.url === "/private") {
     //llamamon al middleware y pasamos un "next" manual
     return profileController(req, res);
   }

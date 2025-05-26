@@ -1,11 +1,16 @@
 import { generarToken, verificarToken } from "../src/utils/jwt";
 
 describe("JWT Utils", () => {
-  const user = "Juan";
+  const user = {
+    _id: "2424",
+    username: "juanillo",
+    role: "user",
+  };
+  let playoad = { _id: "2424", username: "juanillo", role: "user" };
   let token: string;
 
   it("generar un token valido", () => {
-    token = generarToken(user);
+    token = generarToken(playoad);
     expect(typeof token).toBe("string");
   });
 

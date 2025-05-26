@@ -1,11 +1,18 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { StringDecoder } from "string_decoder";
 import { Task } from "../../../models/Task";
+import { validateTask } from "../../../routes/validations/task.schema";
 
 export function createTaskController(
   req: IncomingMessage,
   res: ServerResponse
 ) {
+  if (req.headers["content-type"] !== "application/json") {
+    res.writeHead(425, { "content-type": "application/json" });
+    return res.end(
+      JSON.stringify({ message: "Tipo de contenido no soportado" })
+    );
+  }
   const decoder = new StringDecoder("utf-8");
   let body = "";
 
@@ -17,13 +24,21 @@ export function createTaskController(
     body += decoder.end();
 
     try {
-      const { title, description } = JSON.parse(body);
-      if (!title || !description) {
+      const parsed = JSON.parse(body);
+
+      //validar con Zod.
+      const validation = validateTask(parsed);
+
+      if (!validation.success) {
         res.writeHead(400, { "content-type": "application/json" });
         return res.end(
-          JSON.stringify({ message: "Titulo y descripcion requeridos" })
+          JSON.stringify({
+            message: "Datos Invalidos",
+            errors: validation.error.errors,
+          })
         );
       }
+      const { title, description, completed } = validation.data;
 
       //@ts-ignore
       const user = req.user;
@@ -31,6 +46,7 @@ export function createTaskController(
       const newTask = new Task({
         title,
         description,
+        completed: completed ?? false,
         owner: user._id,
       });
 

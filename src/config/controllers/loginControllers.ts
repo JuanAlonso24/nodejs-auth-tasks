@@ -43,7 +43,11 @@ export async function loginController(
         return res.end(JSON.stringify({ message: "Contraseña incorrecta" }));
       }
 
-      const token = generarToken(user.id.toString(), user.username, user.role);
+      const token = generarToken({
+        _id: user.id.toString(),
+        username: user.username,
+        role: user.role,
+      });
 
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ message: "Login exitoso", token }));

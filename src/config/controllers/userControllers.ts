@@ -27,10 +27,7 @@ export async function registerControllers(
         })
       );
     }
-    const { username, password, role 
-
-      
-    } = data;
+    const { username, password, role } = data;
     try {
       //validar si el usuario y existe
       const userExists = await User.findOne({ username });
@@ -52,7 +49,7 @@ export async function registerControllers(
       await newUser.save();
 
       res.writeHead(201, { "content-type": "application/json" });
-      res.end(JSON.stringify({ message: "User register " }));
+      res.end(JSON.stringify({ message: "User registrado " }));
     } catch (error: any) {
       res.writeHead(500, { "content-type": "application/json" });
       res.end(
