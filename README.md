@@ -1,58 +1,112 @@
-# 🛠️ API de Autenticación y Gestión de Tareas
+# 🧠 Task API - Backend Profesional con Node.js + TypeScript
 
-Este es un mini proyecto backend desarrollado con **Node.js** y **TypeScript** que permite a los usuarios autenticarse (con JWT), crear tareas, obtenerlas, actualizarlas y eliminarlas. Incluye protección de rutas, roles y conexión a MongoDB.
+Bienvenido a la API de tareas con autenticación, roles, notificaciones, subida de archivos, verificación en 2 pasos y más.  
+Ideal para portafolio y como base para apps reales.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+## 🚀 Tecnologías
 
-- Node.js
-- TypeScript
+- Node.js + TypeScript
 - MongoDB + Mongoose
-- JSON Web Tokens (JWT)
-- HTTP nativo (sin frameworks)
+- Zod (validaciones)
+- JWT (autenticación)
+- WebSocket (notificaciones en tiempo real)
+- Cloudinary (subida de imágenes)
+- Resend (envío de correos)
+- Jest (testing)
+- Render (despliegue)
 
 ---
 
-## 📦 Instalación
+## 📦 Funcionalidades principales
 
-1. Clona el repositorio:
+- ✅ Registro + Login con JWT
+- ✅ Verificación de email y verificación en 2 pasos (2FA)
+- ✅ CRUD de tareas con imágenes (Cloudinary)
+- ✅ Roles (`user`, `admin`) y permisos
+- ✅ Panel de administración con estadísticas
+- ✅ Notificaciones en tiempo real y por email
+- ✅ Recuperación de cuenta por correo
+- ✅ Logs de acciones y seguridad
+- ✅ Rate limiting, logger y sanitizado de inputs
+- ✅ Testing con Jest
+
+---
+
+## 🛠️ Instalación local
 
 ```bash
-git clone https://github.com/TU_USUARIO/TU_REPO.git
-cd TU_REPO
-```
-2.- Instala Dependencias 
+git clone https://github.com/tuusuario/mi-backend-api.git
+cd mi-backend-api
 npm install
+cp .env.example .env # y completa tus variables
+npm run dev
 
-3.- Crea el archivo .env
-MONGO_URI=mongodb://localhost:27017/tu_basededatos
-SECRET_KEY=tu_clave_secreta
+---
+📬 Variables de entorno requeridas
+env
+Copiar
+Editar
 PORT=3000
+MONGO_URI=tu_uri_de_mongodb
+JWT_SECRET=clave_secreta
+RESEND_API_KEY=tu_api_key
+CLOUDINARY_CLOUD_NAME=xxx
+CLOUDINARY_API_KEY=xxx
+CLOUDINARY_API_SECRET=xxx
+---
 
-4.- Corre el servidor
-npm run dev 
+📮 Rutas principales
+🔐 Auth
+POST /register – Crea un usuario nuevo
 
-🧪 Endpoints disponibles
-Auth
-Método	Ruta	Descripción
-POST	/register	Registrar nuevo usuario
-POST	/login	Login y recibir token
+POST /login – Login con JWT + 2FA
 
-Tareas
-Todas protegidas con JWT (Authorization: Bearer "token")
+POST /verify-email – Verifica el correo
 
-Método	Ruta	Descripción
-POST	/tasks	Crear nueva tarea
-GET	/tasks	Obtener todas las tareas
-GET	/tasks/user	Obtener tareas del usuario autenticado
-PUT	/tasks/:id	Actualizar una tarea por ID
-DELETE	/tasks/:id	Eliminar una tarea por ID
+POST /forgot-password – Solicita recuperación
 
-🔐 Roles
-Los usuarios tienen rol user o admin.
+POST /reset-password – Restablece contraseña
 
-Puedes extender lógica de permisos fácilmente.
+✅ Tareas
+GET /tasks – Ver tareas del usuario
 
-✍️ Autor
-Desarrollado por Juan Alonso.
+POST /tasks – Crear tarea
+
+PATCH /tasks/:id – Editar tarea
+
+DELETE /tasks/:id – Eliminar tarea
+
+PATCH /tasks/:id/image – Asociar imagen
+
+⚙️ Admin
+GET /admin/dashboard – Ver estadísticas
+
+GET /admin/logs – Ver logs
+
+DELETE /admin/users/:id – Eliminar usuarios
+
+🌐 Despliegue
+Puedes probar la API online desde:
+
+🔗 URL: https://mi-api-tareas.onrender.com
+
+---
+
+🧪 Testing
+bash
+Copiar
+Editar
+npm run test
+Se incluyen tests para autenticación, tareas y rutas protegidas.
+
+---
+
+🤝 Autor
+Desarrollado por Juan Alonso – backend developer en proceso 💻🚀
+
+
+⭐ Recomendación
+Si te sirvió, deja una ⭐ en el repo para apoyar el proyecto 🙌
+
